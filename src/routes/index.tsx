@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   Home,
@@ -83,6 +83,7 @@ type Post =
       caption: string;
       tag: string;
       likes: string;
+      articleId?: string;
     }
   | {
       kind: "reel";
@@ -131,6 +132,7 @@ const feed: Post[] = [
     caption:
       "Why the transformer ate deep learning. A 60-second tour of Q, K, V and the magic of self-attention.",
     likes: "12.4k",
+    articleId: "1",
   },
   {
     kind: "reel",
@@ -440,12 +442,26 @@ function PostCard({ post }: { post: Post }) {
           />
           {/* gradient title overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
-            <p className="text-[11px] uppercase tracking-widest opacity-80">#{post.tag}</p>
-            <h2 className="mt-1 text-xl sm:text-2xl font-extrabold leading-tight drop-shadow">
-              {post.title}
-            </h2>
-          </div>
+          {"articleId" in post && post.articleId ? (
+            <Link
+              to="/post/$postId"
+              params={{ postId: post.articleId }}
+              target="_blank"
+              className="absolute bottom-0 left-0 right-0 p-5 text-white group/link"
+            >
+              <p className="text-[11px] uppercase tracking-widest opacity-80">#{post.tag}</p>
+              <h2 className="mt-1 text-xl sm:text-2xl font-extrabold leading-tight drop-shadow group-hover/link:underline underline-offset-2">
+                {post.title}
+              </h2>
+            </Link>
+          ) : (
+            <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
+              <p className="text-[11px] uppercase tracking-widest opacity-80">#{post.tag}</p>
+              <h2 className="mt-1 text-xl sm:text-2xl font-extrabold leading-tight drop-shadow">
+                {post.title}
+              </h2>
+            </div>
+          )}
 
           {/* reel badge */}
           {post.kind === "reel" && (
