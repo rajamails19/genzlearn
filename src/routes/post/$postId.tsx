@@ -104,7 +104,6 @@ function ArticlePage() {
 
       {/* article body */}
       <div className="max-w-2xl mx-auto px-5 sm:px-8 py-10 space-y-10">
-
         {/* TL;DR pill */}
         <div className="glass-strong rounded-3xl p-5 shadow-soft border border-white/50">
           <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">TL;DR</p>
@@ -124,10 +123,10 @@ function ArticlePage() {
             RNNs were reading one word at a time. That was the problem.
           </h2>
           <p className="text-base leading-relaxed text-foreground/80">
-            Before 2017, the go-to architecture for language was the RNN — Recurrent Neural
-            Network. Imagine reading a book but you're only allowed to look at one word, remember
-            something about it, and move to the next. By the time you reach word 500 you've
-            basically forgotten word 1.
+            Before 2017, the go-to architecture for language was the RNN — Recurrent Neural Network.
+            Imagine reading a book but you're only allowed to look at one word, remember something
+            about it, and move to the next. By the time you reach word 500 you've basically
+            forgotten word 1.
           </p>
           <p className="mt-4 text-base leading-relaxed text-foreground/80">
             That's called the{" "}
@@ -169,9 +168,7 @@ function ArticlePage() {
         {/* QKV explainer cards */}
         <section>
           <SectionLabel icon={Eye} label="The magic" />
-          <h2 className="text-2xl font-extrabold mt-2 mb-5">
-            Q, K, V — explained with a vibe.
-          </h2>
+          <h2 className="text-2xl font-extrabold mt-2 mb-5">Q, K, V — explained with a vibe.</h2>
 
           <div className="space-y-4">
             <QKVCard
@@ -209,9 +206,9 @@ function ArticlePage() {
           </div>
           <p className="mt-4 text-sm leading-relaxed text-foreground/70">
             <strong>Step by step:</strong> Multiply Q × Kᵀ to get raw attention scores (how much
-            each word cares about each other word). Divide by √dₖ to stop the scores from
-            exploding. Apply softmax to turn them into probabilities. Multiply by V to get the
-            weighted mix. Done.
+            each word cares about each other word). Divide by √dₖ to stop the scores from exploding.
+            Apply softmax to turn them into probabilities. Multiply by V to get the weighted mix.
+            Done.
           </p>
         </section>
 
@@ -223,8 +220,8 @@ function ArticlePage() {
           </p>
           <p className="mt-4 text-base leading-relaxed text-foreground/80">
             What does <strong>"it"</strong> refer to? The animal or the street? You know it's the
-            animal. But how? Because <em>tired</em> semantically connects to <em>animal</em>, not
-            to <em>street</em>.
+            animal. But how? Because <em>tired</em> semantically connects to <em>animal</em>, not to{" "}
+            <em>street</em>.
           </p>
           <p className="mt-4 text-base leading-relaxed text-foreground/80">
             Self-attention figures this out by letting the word <strong>"it"</strong> broadcast its
@@ -248,7 +245,9 @@ function ArticlePage() {
           <p className="text-base leading-relaxed text-foreground/80">
             One attention head is cool. But language has multiple types of relationships
             simultaneously — syntactic, semantic, coreference, positional. So transformers run{" "}
-            <span className="font-semibold text-foreground">multiple attention heads in parallel</span>
+            <span className="font-semibold text-foreground">
+              multiple attention heads in parallel
+            </span>
             , each learning a different kind of relationship.
           </p>
           <p className="mt-4 text-base leading-relaxed text-foreground/80">
@@ -321,13 +320,31 @@ function ArticlePage() {
           <h2 className="text-xl font-extrabold mb-4">What to learn next 🗺️</h2>
           <div className="space-y-3">
             {[
-              { step: "01", label: "Positional Encoding", note: "Transformers have no sense of order by default. How do they fix that?" },
-              { step: "02", label: "The Encoder–Decoder Stack", note: "The original transformer had both. GPT kept only the decoder. Why?" },
-              { step: "03", label: "Flash Attention", note: "A hardware-aware rewrite of attention. Made long contexts possible." },
-              { step: "04", label: "Build a mini-GPT", note: "Karpathy's nanoGPT. 200 lines. The best way to actually get it." },
+              {
+                step: "01",
+                label: "Positional Encoding",
+                note: "Transformers have no sense of order by default. How do they fix that?",
+              },
+              {
+                step: "02",
+                label: "The Encoder–Decoder Stack",
+                note: "The original transformer had both. GPT kept only the decoder. Why?",
+              },
+              {
+                step: "03",
+                label: "Flash Attention",
+                note: "A hardware-aware rewrite of attention. Made long contexts possible.",
+              },
+              {
+                step: "04",
+                label: "Build a mini-GPT",
+                note: "Karpathy's nanoGPT. 200 lines. The best way to actually get it.",
+              },
             ].map((item) => (
               <div key={item.step} className="flex gap-4 items-start glass rounded-2xl p-4">
-                <span className="text-xs font-black text-primary/60 shrink-0 pt-0.5">{item.step}</span>
+                <span className="text-xs font-black text-primary/60 shrink-0 pt-0.5">
+                  {item.step}
+                </span>
                 <div>
                   <p className="font-semibold text-sm">{item.label}</p>
                   <p className="text-xs text-foreground/60 mt-0.5">{item.note}</p>
