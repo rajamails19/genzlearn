@@ -15,6 +15,8 @@ import { Route as ReelsRouteImport } from './routes/reels'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as CreateRouteImport } from './routes/create'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SavedFolderIdRouteImport } from './routes/saved/$folderId'
+import { Route as ReelReelIdRouteImport } from './routes/reel/$reelId'
 import { Route as PostPostIdRouteImport } from './routes/post/$postId'
 
 const SearchRoute = SearchRouteImport.update({
@@ -47,6 +49,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SavedFolderIdRoute = SavedFolderIdRouteImport.update({
+  id: '/$folderId',
+  path: '/$folderId',
+  getParentRoute: () => SavedRoute,
+} as any)
+const ReelReelIdRoute = ReelReelIdRouteImport.update({
+  id: '/reel/$reelId',
+  path: '/reel/$reelId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PostPostIdRoute = PostPostIdRouteImport.update({
   id: '/post/$postId',
   path: '/post/$postId',
@@ -58,18 +70,22 @@ export interface FileRoutesByFullPath {
   '/create': typeof CreateRoute
   '/explore': typeof ExploreRoute
   '/reels': typeof ReelsRoute
-  '/saved': typeof SavedRoute
+  '/saved': typeof SavedRouteWithChildren
   '/search': typeof SearchRoute
   '/post/$postId': typeof PostPostIdRoute
+  '/reel/$reelId': typeof ReelReelIdRoute
+  '/saved/$folderId': typeof SavedFolderIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/create': typeof CreateRoute
   '/explore': typeof ExploreRoute
   '/reels': typeof ReelsRoute
-  '/saved': typeof SavedRoute
+  '/saved': typeof SavedRouteWithChildren
   '/search': typeof SearchRoute
   '/post/$postId': typeof PostPostIdRoute
+  '/reel/$reelId': typeof ReelReelIdRoute
+  '/saved/$folderId': typeof SavedFolderIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -77,9 +93,11 @@ export interface FileRoutesById {
   '/create': typeof CreateRoute
   '/explore': typeof ExploreRoute
   '/reels': typeof ReelsRoute
-  '/saved': typeof SavedRoute
+  '/saved': typeof SavedRouteWithChildren
   '/search': typeof SearchRoute
   '/post/$postId': typeof PostPostIdRoute
+  '/reel/$reelId': typeof ReelReelIdRoute
+  '/saved/$folderId': typeof SavedFolderIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +109,8 @@ export interface FileRouteTypes {
     | '/saved'
     | '/search'
     | '/post/$postId'
+    | '/reel/$reelId'
+    | '/saved/$folderId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +120,8 @@ export interface FileRouteTypes {
     | '/saved'
     | '/search'
     | '/post/$postId'
+    | '/reel/$reelId'
+    | '/saved/$folderId'
   id:
     | '__root__'
     | '/'
@@ -109,6 +131,8 @@ export interface FileRouteTypes {
     | '/saved'
     | '/search'
     | '/post/$postId'
+    | '/reel/$reelId'
+    | '/saved/$folderId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -116,9 +140,10 @@ export interface RootRouteChildren {
   CreateRoute: typeof CreateRoute
   ExploreRoute: typeof ExploreRoute
   ReelsRoute: typeof ReelsRoute
-  SavedRoute: typeof SavedRoute
+  SavedRoute: typeof SavedRouteWithChildren
   SearchRoute: typeof SearchRoute
   PostPostIdRoute: typeof PostPostIdRoute
+  ReelReelIdRoute: typeof ReelReelIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -165,6 +190,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/saved/$folderId': {
+      id: '/saved/$folderId'
+      path: '/$folderId'
+      fullPath: '/saved/$folderId'
+      preLoaderRoute: typeof SavedFolderIdRouteImport
+      parentRoute: typeof SavedRoute
+    }
+    '/reel/$reelId': {
+      id: '/reel/$reelId'
+      path: '/reel/$reelId'
+      fullPath: '/reel/$reelId'
+      preLoaderRoute: typeof ReelReelIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/post/$postId': {
       id: '/post/$postId'
       path: '/post/$postId'
@@ -175,14 +214,25 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface SavedRouteChildren {
+  SavedFolderIdRoute: typeof SavedFolderIdRoute
+}
+
+const SavedRouteChildren: SavedRouteChildren = {
+  SavedFolderIdRoute: SavedFolderIdRoute,
+}
+
+const SavedRouteWithChildren = SavedRoute._addFileChildren(SavedRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CreateRoute: CreateRoute,
   ExploreRoute: ExploreRoute,
   ReelsRoute: ReelsRoute,
-  SavedRoute: SavedRoute,
+  SavedRoute: SavedRouteWithChildren,
   SearchRoute: SearchRoute,
   PostPostIdRoute: PostPostIdRoute,
+  ReelReelIdRoute: ReelReelIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

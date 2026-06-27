@@ -13,12 +13,14 @@ import {
   ChevronRight,
   Heart,
   Film,
+  Check,
 } from "lucide-react";
 
 import mascot from "@/assets/mascot.png";
-import { topics, feed, categories } from "@/lib/data";
+import { topics, feed } from "@/lib/data";
 import type { Post } from "@/lib/data";
 import { AppShell } from "@/components/AppShell";
+import { useSavedStore } from "@/lib/saved-store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -38,12 +40,9 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <AppShell>
-      <div className="xl:mr-80">
-        <StoriesRail />
-        <Feed />
-      </div>
-      <RightCategories />
+    <AppShell right={<RightCategories />}>
+      <StoriesRail />
+      <Feed />
     </AppShell>
   );
 }
@@ -120,9 +119,29 @@ function Feed() {
 function PostCard({ post }: { post: Post }) {
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [savedToFolder, setSavedToFolder] = useState<string | null>(null);
+  const { folders, saveToFolder } = useSavedStore();
+
+  const accent = "cardAccent" in post && post.cardAccent ? post.cardAccent : null;
+
+  function handleSaveToFolder(folderId: string) {
+    const postWithImg = post as Post & { img?: string; title?: string };
+    saveToFolder(folderId, {
+      postId: post.id,
+      title: "title" in post ? (post.title ?? "") : "quote" in post ? post.quote.slice(0, 60) : "",
+      tag: post.tag,
+      author: post.author,
+      img: "img" in postWithImg ? postWithImg.img : undefined,
+      kind: post.kind,
+    });
+    setSavedToFolder(folderId);
+    setTimeout(() => setSavedToFolder(null), 1800);
+  }
 
   return (
-    <article className="glass-strong rounded-3xl shadow-soft overflow-hidden">
+    <article
+      className={`rounded-3xl shadow-soft overflow-hidden ${accent ? `bg-gradient-to-br ${accent} border-2 border-white/40` : "glass-strong"}`}
+    >
       {/* header */}
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3">
         <div className="flex min-w-0 items-center gap-3">
@@ -158,13 +177,26 @@ function PostCard({ post }: { post: Post }) {
             src={post.img}
             alt={post.title}
             loading="lazy"
-            className="w-full aspect-[4/5] object-cover"
+            className={`w-full object-cover ${accent ? "aspect-[4/3]" : "aspect-[4/5]"}`}
             width={768}
             height={1024}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+          <div
+            className={`absolute inset-0 bg-gradient-to-t ${accent ? "from-indigo-900/60 via-transparent to-transparent" : "from-black/70 via-black/10 to-transparent"}`}
+          />
 
-          {"articleId" in post && post.articleId ? (
+          {"reelId" in post && post.reelId ? (
+            <Link
+              to="/reel/$reelId"
+              params={{ reelId: post.reelId }}
+              className="absolute bottom-0 left-0 right-0 p-5 text-white group/link"
+            >
+              <p className="text-[11px] uppercase tracking-widest opacity-80">#{post.tag}</p>
+              <h2 className="mt-1 text-xl sm:text-2xl font-extrabold leading-tight drop-shadow group-hover/link:underline underline-offset-2">
+                {post.title}
+              </h2>
+            </Link>
+          ) : "articleId" in post && post.articleId ? (
             <Link
               to="/post/$postId"
               params={{ postId: post.articleId }}
@@ -187,11 +219,11 @@ function PostCard({ post }: { post: Post }) {
 
           {post.kind === "reel" && (
             <>
-              <button className="absolute inset-0 grid place-items-center">
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <span className="size-16 rounded-full glass-strong grid place-items-center shadow-glow animate-float">
                   <Play className="size-7 text-primary fill-primary" />
                 </span>
-              </button>
+              </div>
               <span className="absolute top-3 left-3 flex items-center gap-1 px-2 py-1 rounded-full glass text-[11px] font-semibold">
                 <Film className="size-3" /> {post.duration}
               </span>
@@ -252,18 +284,26 @@ function PostCard({ post }: { post: Post }) {
         {saved && (
           <div className="mt-3 glass rounded-2xl p-3 flex items-center gap-2 overflow-x-auto scrollbar-none">
             <span className="text-xs font-semibold pr-1 shrink-0">Save to →</span>
-            {categories.slice(0, 5).map((c) => (
-              <Link
-                key={c.name}
-                to="/saved"
-                className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-white bg-gradient-to-br ${c.color} shadow-soft`}
+            {folders.slice(0, 6).map((f) => (
+              <button
+                key={f.id}
+                onClick={() => handleSaveToFolder(f.id)}
+                className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-white bg-gradient-to-br ${f.gradient} shadow-soft transition`}
               >
-                <c.icon className="size-3.5" /> {c.name}
-              </Link>
+                {savedToFolder === f.id ? (
+                  <Check className="size-3.5" />
+                ) : (
+                  <span className="text-xs leading-none">{f.emoji}</span>
+                )}
+                {f.name}
+              </button>
             ))}
-            <button className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold glass-strong">
+            <Link
+              to="/saved"
+              className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold glass-strong"
+            >
               <FolderPlus className="size-3.5" /> New
-            </button>
+            </Link>
           </div>
         )}
       </div>
@@ -285,37 +325,43 @@ function EndOfFeed() {
 /* ---------------- right categories (desktop) ---------------- */
 
 function RightCategories() {
+  const { folders, countInFolder } = useSavedStore();
+
   return (
     <aside className="hidden xl:flex fixed right-0 top-0 h-screen w-80 flex-col gap-4 px-5 py-6 glass border-l border-white/40 z-20 overflow-y-auto">
       <div>
         <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
           Your folders
         </h3>
-        <p className="text-sm text-foreground/70 mt-1">Tap to drop any post in.</p>
+        <p className="text-sm text-foreground/70 mt-1">Tap to open a folder.</p>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        {categories.map((c) => (
+        {folders.map((f) => (
           <Link
-            key={c.name}
-            to="/saved"
+            key={f.id}
+            to="/saved/$folderId"
+            params={{ folderId: f.id }}
             className="group glass-strong rounded-2xl p-4 text-left shadow-soft hover:-translate-y-0.5 transition"
           >
             <div
-              className={`size-10 rounded-xl bg-gradient-to-br ${c.color} grid place-items-center shadow-glow mb-3`}
+              className={`size-10 rounded-xl bg-gradient-to-br ${f.gradient} grid place-items-center shadow-glow mb-3`}
             >
-              <c.icon className="size-5 text-white" />
+              <span className="text-xl">{f.emoji}</span>
             </div>
-            <p className="text-sm font-semibold">{c.name}</p>
-            <p className="text-[11px] text-muted-foreground">{c.count} items</p>
+            <p className="text-sm font-semibold truncate">{f.name}</p>
+            <p className="text-[11px] text-muted-foreground">{countInFolder(f.id)} items</p>
           </Link>
         ))}
-        <button className="rounded-2xl p-4 text-left border-2 border-dashed border-primary/40 hover:border-primary transition flex flex-col items-start justify-center gap-2">
+        <Link
+          to="/saved"
+          className="rounded-2xl p-4 text-left border-2 border-dashed border-primary/40 hover:border-primary transition flex flex-col items-start justify-center gap-2"
+        >
           <div className="size-10 rounded-xl glass grid place-items-center">
             <FolderPlus className="size-5 text-primary" />
           </div>
           <p className="text-sm font-semibold text-primary">New folder</p>
-        </button>
+        </Link>
       </div>
 
       <div className="mt-4 glass-strong rounded-3xl p-5 shadow-soft relative overflow-hidden">

@@ -9,6 +9,7 @@ import fBrain from "@/assets/feed-brain.jpg";
 import fGpu from "@/assets/feed-gpu.jpg";
 import fEmbed from "@/assets/feed-embed.jpg";
 import fLibrary from "@/assets/feed-library.jpg";
+import fLossGuide from "@/assets/loss-guide.png";
 
 export const topics = [
   {
@@ -80,6 +81,7 @@ export type Post =
       tag: string;
       likes: string;
       articleId?: string;
+      cardAccent?: string;
     }
   | {
       kind: "reel";
@@ -92,6 +94,8 @@ export type Post =
       tag: string;
       likes: string;
       duration: string;
+      articleId?: string;
+      reelId?: string;
     }
   | {
       kind: "quote";
@@ -114,6 +118,7 @@ export type Post =
       tag: string;
       likes: string;
       slides: number;
+      articleId?: string;
     };
 
 export const feed: Post[] = [
@@ -141,6 +146,7 @@ export const feed: Post[] = [
     title: "How a neural net actually learns",
     caption: "Backprop, but make it cinematic. Save this before your next interview.",
     likes: "8.1k",
+    articleId: "2",
   },
   {
     kind: "quote",
@@ -158,12 +164,136 @@ export const feed: Post[] = [
     author: "paperdrop",
     time: "5h",
     img: fGpu,
-    tag: "Hardware",
+    tag: "ML Basics",
     slides: 7,
-    title: "Inside a single H100 — swipe →",
+    title: "Supervised vs Unsupervised — what's the diff?",
     caption:
-      "From SMs to HBM3. Everything you need to know about the chip running half the internet.",
+      "Labels or no labels? The most fundamental split in all of machine learning, explained simply.",
     likes: "21.7k",
+    articleId: "3",
+  },
+  {
+    kind: "image",
+    id: "15",
+    author: "lumen.daily",
+    time: "1h",
+    img: tRl,
+    tag: "ML Basics",
+    title: "Overfitting vs underfitting — the bias-variance tradeoff.",
+    caption:
+      "Too simple = misses everything. Too complex = memorises noise. The sweet spot is the whole game.",
+    likes: "31.2k",
+    articleId: "11",
+  },
+  {
+    kind: "carousel",
+    id: "14",
+    author: "gradient.ai",
+    time: "1h",
+    img: tPrompt,
+    tag: "Training",
+    slides: 5,
+    title: "Learning rate — the one dial that breaks everything.",
+    caption:
+      "Too small: never converges. Too big: explodes. The learning rate is the most important hyperparameter in deep learning.",
+    likes: "29.1k",
+    articleId: "10",
+  },
+  {
+    kind: "image",
+    id: "13",
+    author: "lumen.daily",
+    time: "2h",
+    img: tLlm,
+    tag: "LLMs",
+    title: "How LLMs actually work — tokens to text.",
+    caption:
+      "Tokenise, embed, attend, repeat. The four-step loop that turns next-token prediction into something that feels like intelligence.",
+    likes: "34.6k",
+    articleId: "9",
+  },
+  {
+    kind: "carousel",
+    id: "12",
+    author: "gradient.ai",
+    time: "3h",
+    img: fBrain,
+    tag: "Backprop",
+    slides: 6,
+    title: "Backpropagation — how your network assigns blame.",
+    caption:
+      "Every wrong prediction triggers a blame chain. The chain rule fires backwards through every layer. That's backprop.",
+    likes: "27.3k",
+    articleId: "8",
+  },
+  {
+    kind: "image",
+    id: "7",
+    author: "gradient.ai",
+    time: "4h",
+    img: tRl,
+    tag: "Gradient Descent",
+    title: "Gradient Descent — the one rule that trains every AI model.",
+    caption:
+      "w = w − lr × ∇L. This single update rule powers GPT, Stable Diffusion, AlphaGo — every model ever trained.",
+    likes: "18.2k",
+    articleId: "4",
+  },
+  {
+    kind: "carousel",
+    id: "8",
+    author: "lumen.daily",
+    time: "5h",
+    img: tNeural,
+    tag: "Activation Fns",
+    slides: 3,
+    title: "ReLU, Sigmoid, Softmax — what they actually do to gradients.",
+    caption:
+      "Not all activations are equal. One kills neurons, one kills gradients, one turns numbers into probabilities. Here's what you need to know.",
+    likes: "14.3k",
+    articleId: "5",
+  },
+  {
+    kind: "reel",
+    id: "9",
+    author: "lumen.daily",
+    time: "6h",
+    img: tMlops,
+    tag: "Loss Functions",
+    duration: "0:58",
+    title: "MSE vs Cross-Entropy — pick wrong and your model won't learn.",
+    caption:
+      "The loss function is the only thing your model actually optimises for. Here's how to choose correctly every time.",
+    likes: "22.1k",
+    reelId: "1",
+  },
+  {
+    kind: "image",
+    id: "10",
+    author: "founded.ai",
+    time: "7h",
+    img: fLossGuide,
+    tag: "Loss Functions",
+    title: "Cross-Entropy vs MSE — the full visual breakdown.",
+    caption:
+      "Save this. Classification → Cross-Entropy. Regression → MSE. The decision point is always the nature of your output.",
+    likes: "31.4k",
+    articleId: "6",
+    cardAccent: "from-indigo-500/30 via-violet-400/20 to-teal-400/30",
+  },
+  {
+    kind: "carousel",
+    id: "11",
+    author: "paperdrop",
+    time: "9h",
+    img: tMlops,
+    tag: "Batch Norm",
+    slides: 5,
+    title: "Batch Normalization — why it works and what it actually normalizes.",
+    caption:
+      "Without it: training is slow, finicky, and sensitive to every weight init choice. With it: suddenly you can go 10× faster. Here's the full picture.",
+    likes: "19.8k",
+    articleId: "7",
   },
   {
     kind: "image",

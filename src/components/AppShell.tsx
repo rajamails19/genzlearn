@@ -12,7 +12,7 @@ const nav = [
   { name: "Create", icon: PlusSquare, to: "/create" },
 ];
 
-export function AppShell({ children }: { children: ReactNode }) {
+export function AppShell({ children, right }: { children: ReactNode; right?: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
@@ -87,7 +87,10 @@ export function AppShell({ children }: { children: ReactNode }) {
       </aside>
 
       {/* main content */}
-      <main className="lg:ml-20 xl:ml-64 pb-24 lg:pb-10">{children}</main>
+      <main className={`lg:ml-20 xl:ml-64 pb-24 lg:pb-10 ${right ? "xl:mr-80" : ""}`}>
+        {children}
+      </main>
+      {right}
 
       {/* mobile bottom nav */}
       <nav className="lg:hidden fixed bottom-0 inset-x-0 z-30 glass-strong border-t border-white/40 px-4 py-2 grid grid-cols-5 gap-1">
